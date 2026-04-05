@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>WaterWatch</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ══ SIGNUP ══ -->
+  <div class="screen active" id="screen-signup">
+    <div class="mobile-wrap">
+      <div class="auth-page">
+        <div class="auth-logo">💧 Water<span>Watch</span></div>
+        <p class="auth-sub">Community Water Issue Reporter</p>
+        <div class="auth-card">
+          <h2>Create Account</h2>
+          <div class="field"><label>Full Name</label><input type="text" id="reg-name" placeholder="e.g. Ravi Kumar" />
+          </div>
+          <div class="field"><label>Username</label><input type="text" id="reg-user" placeholder="e.g. ravikumar" />
+          </div>
+          <div class="field"><label>Phone Number</label><input type="tel" id="reg-phone"
+              placeholder="+91 98765 43210" /></div>
+          <div class="field"><label>Password</label><input type="password" id="reg-pass"
+              placeholder="Min 6 characters" /></div>
+          <div class="field"><label>Confirm Password</label><input type="password" id="reg-confirm"
+              placeholder="Re-enter password" /></div>
+          <button class="btn btn-primary" onclick="register()">Create Account →</button>
+          <div class="auth-switch">Already have an account? <a onclick="goTo('login')">Log In</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LOGIN ══ -->
+  <div class="screen" id="screen-login">
+    <div class="mobile-wrap">
+      <div class="auth-page">
+        <div class="auth-logo">💧 Water<span>Watch</span></div>
+        <p class="auth-sub">Community Water Issue Reporter</p>
+        <div class="auth-card">
+          <h2>Welcome Back 👋</h2>
+          <div class="field"><label>Username</label><input type="text" id="log-user" placeholder="Your username" />
+          </div>
+          <div class="field"><label>Password</label><input type="password" id="log-pass" placeholder="Your password" />
+          </div>
+          <button class="btn btn-primary" onclick="login()">Log In →</button>
+          <button class="btn btn-outline" onclick="goTo('admin-login')">🔐 Admin Login</button>
+          <div class="auth-switch">Don't have an account? <a onclick="goTo('signup')">Sign Up</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HOME ══ -->
+  <div class="screen" id="screen-home">
+    <div class="mobile-wrap">
+      <div class="topbar">
+        <div class="logo" onclick="goTo('home')">💧 Water<span>Watch</span></div>
+        <div class="user-pill" onclick="logout()">👤 <span id="topName"></span> · Logout</div>
+      </div>
+      <div class="page">
+        <div class="welcome-block">
+          <h2>Hello, <span id="greetName">there</span>! 👋</h2>
+          <p>Report water issues to help your community.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+          <div class="card" style="text-align:center;padding:14px;">
+            <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary);"
+              id="myCount">0</div>
+            <div style="font-size:0.76rem;color:var(--text2);">My Reports</div>
+          </div>
+          <div class="card" style="text-align:center;padding:14px;">
+            <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;color:var(--teal);"
+              id="resolvedCount">0</div>
+            <div style="font-size:0.76rem;color:var(--text2);">My Resolved</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          <div class="card action-card" onclick="goTo('report')">
+            <div style="font-size:1.8rem;margin-bottom:6px;">📝</div>
+            <div style="font-weight:700;font-size:0.88rem;">Report Issue</div>
+            <div style="font-size:0.73rem;color:var(--text2);">Tap to report</div>
+          </div>
+          <div class="card action-card" onclick="goTo('myreports')">
+            <div style="font-size:1.8rem;margin-bottom:6px;">📋</div>
+            <div style="font-weight:700;font-size:0.88rem;">My Reports</div>
+            <div style="font-size:0.73rem;color:var(--text2);">Track status</div>
+          </div>
+        </div>
+        <div class="info-banner">
+          ℹ️ <b>Your reports are private.</b> Only you and the admin can see your submissions. Once the admin resolves
+          an issue, you'll see the update here.
+        </div>
+      </div>
+      <nav class="bottom-nav">
+        <div class="bnav-item active" onclick="goTo('home')"><span class="bnav-icon">🏠</span>Home</div>
+        <div class="bnav-item" onclick="goTo('report')"><span class="bnav-icon">➕</span>Report</div>
+        <div class="bnav-item" onclick="goTo('map')"><span class="bnav-icon">🗺️</span>My Map</div>
+        <div class="bnav-item" onclick="goTo('myreports')"><span class="bnav-icon">📋</span>Mine</div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ══ REPORT ══ -->
+  <div class="screen" id="screen-report">
+    <div class="mobile-wrap">
+      <div class="topbar">
+        <div class="logo" onclick="goTo('home')">💧 Water<span>Watch</span></div>
+        <div class="user-pill" onclick="goTo('home')">← Back</div>
+      </div>
+      <div class="page">
+        <h1 style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:4px;">Report Water
+          Issue</h1>
+        <p style="font-size:0.83rem;color:var(--text2);margin-bottom:18px;">Your report goes directly to the admin</p>
+
+        <div class="card">
+          <div class="step-title">1. What type of issue?</div>
+          <div class="chip-grid">
+            <div class="chip" onclick="selectType(this,'Leakage')"><span class="chip-icon">💧</span>Leakage</div>
+            <div class="chip" onclick="selectType(this,'Contamination')"><span class="chip-icon"></span>Contamination
+            </div>
+            <div class="chip" onclick="selectType(this,'No Water Supply')"><span class="chip-icon">🚱</span>No Water
+              Supply</div>
+            <div class="chip" onclick="selectType(this,'Flood')"><span class="chip-icon">🌊</span>Flood</div>
+            <div class="chip" onclick="selectType(this,'Drainage Block')"><span class="chip-icon">🚧</span>Drainage
+              Block</div>
+            <div class="chip" onclick="selectType(this,'Pipe Burst')"><span class="chip-icon">💥</span>Pipe Burst</div>
+            <div class="chip" onclick="selectType(this,'Sewage Overflow')"><span class="chip-icon"></span>Sewage
+              Overflow</div>
+            <div class="chip" onclick="selectType(this,'Other')"><span class="chip-icon">📌</span>Other</div>
+          </div>
+          <div class="hint-box" id="typeHint"></div>
+        </div>
+
+        <div class="card">
+          <div class="step-title">2. Describe the problem</div>
+          <div class="field" style="margin:0;"><textarea id="r-desc"
+              placeholder="e.g. Water is leaking from underground pipe near bus stop…"></textarea></div>
+        </div>
+
+        <div class="card">
+          <div class="step-title">3. Location details</div>
+          <div class="field">
+            <label>District</label>
+            <select id="r-district" onchange="loadCities()">
+              <option value="">— Select District —</option>
+              <option>Coimbatore</option>
+              <option>Chennai</option>
+              <option>Madurai</option>
+              <option>Salem</option>
+              <option>Trichy</option>
+              <option>Erode</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>City / Area</label>
+            <select id="r-city">
+              <option value="">— Select District First —</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Landmark / Street (optional)</label>
+            <input type="text" id="r-landmark" placeholder="e.g. Near Gandhipuram Bus Stand" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step-title">4. Pin on map <span
+              style="font-size:0.78rem;color:var(--primary);font-weight:500;">(tap to drop pin)</span></div>
+          <div id="reportMap" style="height:250px;border-radius:12px;overflow:hidden;"></div>
+          <p id="coordNote" style="font-size:0.76rem;color:var(--text3);margin-top:7px;text-align:center;">Tap the map
+            to mark exact location</p>
+        </div>
+
+        <div class="card">
+          <div class="step-title">5. Upload photo proof</div>
+          <div class="img-upload" onclick="document.getElementById('imgInput').click()">
+            <input type="file" id="imgInput" accept="image/*" onchange="previewImg(this)" />
+            <div id="upIcon" style="font-size:1.8rem;margin-bottom:6px;">📷</div>
+            <div id="upText" style="font-size:0.85rem;color:var(--text2);">Tap to upload a photo<br /><span
+                style="font-size:0.73rem;color:var(--text3);">JPG, PNG — optional</span></div>
+            <img class="up-preview" id="imgPreview" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step-title">6. Your phone number</div>
+          <div class="field" style="margin:0;"><input type="tel" id="r-phone" placeholder="+91 98765 43210" /></div>
+          <p style="font-size:0.76rem;color:var(--text3);margin-top:7px;">Shared with admin only for follow-up</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitReport()">✅ Submit Report</button>
+      </div>
+      <nav class="bottom-nav">
+        <div class="bnav-item" onclick="goTo('home')"><span class="bnav-icon">🏠</span>Home</div>
+        <div class="bnav-item active" onclick="goTo('report')"><span class="bnav-icon">➕</span>Report</div>
+        <div class="bnav-item" onclick="goTo('map')"><span class="bnav-icon">🗺️</span>My Map</div>
+        <div class="bnav-item" onclick="goTo('myreports')"><span class="bnav-icon">📋</span>Mine</div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ══ MAP ══ -->
+  <div class="screen" id="screen-map">
+    <div class="mobile-wrap">
+      <div class="topbar">
+        <div class="logo" onclick="goTo('home')">💧 Water<span>Watch</span></div>
+        <div class="user-pill">🗺️ My Issue Map</div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text2);padding:10px 16px 0;text-align:center;">Showing only your reported
+        issues</p>
+      <div id="userMap" style="height:calc(100vh - 160px);margin:10px 14px 0;border-radius:16px;"></div>
+      <nav class="bottom-nav">
+        <div class="bnav-item" onclick="goTo('home')"><span class="bnav-icon">🏠</span>Home</div>
+        <div class="bnav-item" onclick="goTo('report')"><span class="bnav-icon">➕</span>Report</div>
+        <div class="bnav-item active" onclick="goTo('map')"><span class="bnav-icon">🗺️</span>My Map</div>
+        <div class="bnav-item" onclick="goTo('myreports')"><span class="bnav-icon">📋</span>Mine</div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ══ MY REPORTS ══ -->
+  <div class="screen" id="screen-myreports">
+    <div class="mobile-wrap">
+      <div class="topbar">
+        <div class="logo" onclick="goTo('home')">💧 Water<span>Watch</span></div>
+        <div class="user-pill">📋 My Reports</div>
+      </div>
+      <div class="page">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:8px;">My Reports</h2>
+        <p style="font-size:0.82rem;color:var(--text2);margin-bottom:16px;">Only you can see these. Admin updates status
+          after resolution.</p>
+        <div id="myReportList"></div>
+      </div>
+      <nav class="bottom-nav">
+        <div class="bnav-item" onclick="goTo('home')"><span class="bnav-icon">🏠</span>Home</div>
+        <div class="bnav-item" onclick="goTo('report')"><span class="bnav-icon">➕</span>Report</div>
+        <div class="bnav-item" onclick="goTo('map')"><span class="bnav-icon">🗺️</span>My Map</div>
+        <div class="bnav-item active" onclick="goTo('myreports')"><span class="bnav-icon">📋</span>Mine</div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ══ ADMIN LOGIN ══ -->
+  <div class="screen" id="screen-admin-login">
+    <div class="mobile-wrap">
+      <div class="auth-page">
+        <div class="auth-logo">🔐 Admin<span>Panel</span></div>
+        <p class="auth-sub">WaterWatch Administration</p>
+        <div class="auth-card">
+          <h2>Admin Login</h2>
+          <div class="field"><label>Admin Username</label><input type="text" id="adm-user"
+              placeholder="Enter admin username" /></div>
+          <div class="field"><label>Admin Password</label><input type="password" id="adm-pass"
+              placeholder="Enter admin password" /></div>
+          <button class="btn btn-primary" onclick="adminLogin()">🔐 Login as Admin</button>
+          <div class="auth-switch"><a onclick="goTo('login')">← Back to User Login</a></div>
+          <div
+            style="margin-top:16px;padding:11px;background:#fff3e0;border-radius:var(--radius-xs);font-size:0.78rem;color:#e65100;">
+            🔒 Admin access is restricted to the system administrator only.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ADMIN DASHBOARD ══ -->
+  <div class="screen" id="screen-admin">
+    <div class="admin-wrap">
+      <div class="admin-topbar">
+        <h1>💧 WaterWatch Admin</h1>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:0.83rem;opacity:0.8;">Administrator</span>
+          <button onclick="adminLogout()" class="admin-logout-btn">Logout</button>
+        </div>
+      </div>
+      <div class="admin-content">
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-num" id="aTotal">0</div>
+            <div class="s-label">Total Reports</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-num" style="color:#e65100" id="aPending">0</div>
+            <div class="s-label">Pending</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-num" style="color:#1b5e20" id="aResolved">0</div>
+            <div class="s-label">Resolved</div>
+          </div>
+        </div>
+        <h2 class="admin-section-title">📍 All Issues Map</h2>
+        <div id="adminMap"
+          style="height:300px;border-radius:16px;border:1.5px solid var(--border);overflow:hidden;margin-bottom:24px;">
+        </div>
+        <div
+          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <h2 class="admin-section-title" style="margin:0;">All Reports (from all users)</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select id="aFilterStatus" onchange="renderAdmin()" class="admin-filter-sel">
+              <option>All Status</option>
+              <option>Pending</option>
+              <option>Reviewing</option>
+              <option>Resolved</option>
+            </select>
+            <select id="aFilterType" onchange="renderAdmin()" class="admin-filter-sel">
+              <option>All Types</option>
+              <option>Leakage</option>
+              <option>Contamination</option>
+              <option>No Water Supply</option>
+              <option>Flood</option>
+              <option>Drainage Block</option>
+              <option>Pipe Burst</option>
+              <option>Sewage Overflow</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div id="adminReportList">
+          <div class="loading-spinner">Loading reports…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
